@@ -56,16 +56,21 @@ class Houses extends React.Component {
     if (result.hasOwnProperty('imageLink') === true) {
       return (
         <Image
+          width={290}
+          height={290}
           src={`https://api.got.show${result.imageLink}`}
         />
       );
-    } else {
+    } else return null;
+  };
+
+  checkRegion = (result) => {
+    if (result.hasOwnProperty('region') === true) {
       return (
-        <Label
-          content="Image not found!"
-          icon="warning"
-        />
+        <Card.Meta>of the {result.region}</Card.Meta>
       );
+    } else {
+      return <Card.Meta>of the Unnamed Region</Card.Meta>;
     }
   };
 
@@ -73,27 +78,25 @@ class Houses extends React.Component {
     const { results, toggleResult } = this.state;
     if (results.length === 0 && toggleResult === true) {
       return (
-        <Grid.Column width={16}>
-          <Header textAlign="center">
-            Did that House burn by wildfire?
-            <Header.Subheader as="h5" textAlign="center">
-              we couldn't find it...
-            </Header.Subheader>
-          </Header>
-        </Grid.Column>
+        <Header textAlign="center">
+          Did that House burn by wildfire?
+          <Header.Subheader as="h5" textAlign="center">
+            we couldn't find it...
+          </Header.Subheader>
+        </Header>
       );
     } else {
       return results.map((result) => (
-        <Grid.Column key={result.id} width={4}>
+        <Grid.Column key={result.id}>
           <Card>
             {this.checkImage(result)}
             <Card.Content>
-              <Card.Header as="h3">
-                {result.name}
-              </Card.Header>
+              <Card.Header>{result.name}</Card.Header>
+              <Card.Meta>
+                {this.checkRegion(result)}
+              </Card.Meta>
             </Card.Content>
           </Card>
-          <Divider hidden />
         </Grid.Column>
       ));
     }
@@ -103,8 +106,8 @@ class Houses extends React.Component {
     return (
       <Container>
         <Divider hidden />
-        <Header textAlign="center">
-          Houses of Westeros
+        <Header as="h2" textAlign="center">
+          Houses of the Seven Kingdoms
         </Header>
         <Form onSubmit={this.handleSubmit}>
           <Form.Input
@@ -116,7 +119,7 @@ class Houses extends React.Component {
         <Divider hidden />
         <Grid>
           <Grid.Row stretched>
-            {this.showResults()}
+            <Card.Group>{this.showResults()}</Card.Group>
           </Grid.Row>
         </Grid>
       </Container>
